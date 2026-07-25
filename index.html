@@ -263,22 +263,20 @@ flyEls.forEach(el => obs.observe(el));
 
 // ─── Hover corner pinch ───
 document.querySelectorAll('.entry-img').forEach(el => {
-  let frame;
   el.addEventListener('mousemove', e => {
-    cancelAnimationFrame(frame);
-    frame = requestAnimationFrame(() => {
-      const r = el.getBoundingClientRect();
-      const mx = (e.clientX - r.left) / r.width;
-      const my = (e.clientY - r.top) / r.height;
-      const d = [Math.hypot(mx, my), Math.hypot(1-mx, my),
-                 Math.hypot(1-mx, 1-my), Math.hypot(mx, 1-my)];
-      const min = Math.min(...d), max = Math.SQRT2;
-      const p = 0.14, f = 0.04;
-      const v = d.map((dist, i) => i === d.indexOf(min)
-        ? p : -f * (dist / max));
-      el.style.clipPath =
-        `polygon(${v[0]*100}% ${v[0]*100}%,${(1-v[1])*100}% ${v[1]*100}%,${(1-v[2])*100}% ${(1-v[2])*100}%,${v[3]*100}% ${(1-v[3])*100}%)`;
-    });
+    const r = el.getBoundingClientRect();
+    const mx = (e.clientX - r.left) / r.width;
+    const my = (e.clientY - r.top) / r.height;
+    const p = 0.15, f = -0.03;
+    const d = [mx*mx+my*my, (1-mx)*(1-mx)+my*my,
+               (1-mx)*(1-mx)+(1-my)*(1-my), mx*mx+(1-my)*(1-my)];
+    let idx = 0;
+    if (d[1] < d[idx]) idx = 1;
+    if (d[2] < d[idx]) idx = 2;
+    if (d[3] < d[idx]) idx = 3;
+    const v = [f,f,f,f];
+    v[idx] = p;
+    el.style.clipPath = `polygon(${v[0]*100}% ${v[0]*100}%,${(1-v[1])*100}% ${v[1]*100}%,${(1-v[2])*100}% ${(1-v[2])*100}%,${v[3]*100}% ${(1-v[3])*100}%)`;
   });
   el.addEventListener('mouseleave', () => {
     el.style.clipPath = 'polygon(0% 0%,100% 0%,100% 100%,0% 100%)';
