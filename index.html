@@ -49,8 +49,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:h
 .entry:nth-child(even) .entry-body{direction:ltr}
 .entry:nth-child(even) .entry-img{direction:ltr}
 
-.entry-img{position:relative;overflow:hidden;background:var(--surface);will-change:transform;clip-path:polygon(0% 0%,100% 0%,100% 100%,0% 100%);transition:clip-path .2s cubic-bezier(.19,1,.22,1)}
-.entry-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s cubic-bezier(.19,1,.22,1);filter:drop-shadow(0 20px 20px rgba(0,0,0,.25))}
+.entry-img{position:relative;overflow:hidden;background:var(--surface);will-change:transform;cursor:pointer}
+.entry-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s cubic-bezier(.19,1,.22,1),clip-path .15s cubic-bezier(.19,1,.22,1);filter:drop-shadow(0 20px 20px rgba(0,0,0,.25))}
 .entry:hover .entry-img img{transform:scale(1.02)}
 .entry-img.sq{aspect-ratio:1}
 .entry-img.land{aspect-ratio:4/3}
@@ -262,12 +262,12 @@ const obs = new IntersectionObserver(entries => {
 flyEls.forEach(el => obs.observe(el));
 
 // ─── Hover corner pinch ───
-document.querySelectorAll('.entry-img').forEach(el => {
-  el.addEventListener('mousemove', e => {
-    const r = el.getBoundingClientRect();
+document.querySelectorAll('.entry-img img').forEach(img => {
+  img.addEventListener('mousemove', e => {
+    const r = img.getBoundingClientRect();
     const mx = (e.clientX - r.left) / r.width;
     const my = (e.clientY - r.top) / r.height;
-    const p = 0.15, f = -0.03;
+    const p = 0.2, f = -0.04;
     const d = [mx*mx+my*my, (1-mx)*(1-mx)+my*my,
                (1-mx)*(1-mx)+(1-my)*(1-my), mx*mx+(1-my)*(1-my)];
     let idx = 0;
@@ -276,10 +276,10 @@ document.querySelectorAll('.entry-img').forEach(el => {
     if (d[3] < d[idx]) idx = 3;
     const v = [f,f,f,f];
     v[idx] = p;
-    el.style.clipPath = `polygon(${v[0]*100}% ${v[0]*100}%,${(1-v[1])*100}% ${v[1]*100}%,${(1-v[2])*100}% ${(1-v[2])*100}%,${v[3]*100}% ${(1-v[3])*100}%)`;
+    img.style.clipPath = `polygon(${v[0]*100}% ${v[0]*100}%,${(1-v[1])*100}% ${v[1]*100}%,${(1-v[2])*100}% ${(1-v[2])*100}%,${v[3]*100}% ${(1-v[3])*100}%)`;
   });
-  el.addEventListener('mouseleave', () => {
-    el.style.clipPath = 'polygon(0% 0%,100% 0%,100% 100%,0% 100%)';
+  img.addEventListener('mouseleave', () => {
+    img.style.clipPath = 'polygon(0% 0%,100% 0%,100% 100%,0% 100%)';
   });
 });
 </script>
