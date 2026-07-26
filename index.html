@@ -3,35 +3,83 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Dither · Lasers · Reveal</title>
+<title>Kurage · Studio</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:#030303;color:#fff;font-family:system-ui,-apple-system,sans-serif;overflow-x:hidden}
+html{scroll-behavior:smooth}
+body{background:#030303;color:#fff;font-family:system-ui,-apple-system,sans-serif;overflow-x:hidden;line-height:1.6}
 
-.dither-bg{position:fixed;inset:0;z-index:0;width:100vw;height:100vh;pointer-events:none;background:#030303}
+.dither-bg{position:fixed;inset:0;z-index:0;width:100vw;height:100vh;pointer-events:none}
 .lasers-bg{position:fixed;inset:0;z-index:1;width:100vw;height:100vh;pointer-events:none}
+.gradient-blur{position:fixed;z-index:3;pointer-events:none}
+.gradient-blur.top{inset:0 0 auto 0;height:15%}
+.gradient-blur.bottom{inset:auto 0 0 0;height:20%}
+.gradient-blur>div{position:absolute;inset:0}
+.gradient-blur.top::before{content:"";position:absolute;inset:0;z-index:1;backdrop-filter:blur(.5px);mask:linear-gradient(to top,rgba(0,0,0,0) 0%,rgba(0,0,0,1) 12.5%,rgba(0,0,0,1) 25%,rgba(0,0,0,0) 37.5%)}
+.gradient-blur.top>div:nth-of-type(1){z-index:2;backdrop-filter:blur(1px);mask:linear-gradient(to top,rgba(0,0,0,0) 12.5%,rgba(0,0,0,1) 25%,rgba(0,0,0,1) 37.5%,rgba(0,0,0,0) 50%)}
+.gradient-blur.top>div:nth-of-type(2){z-index:3;backdrop-filter:blur(2px);mask:linear-gradient(to top,rgba(0,0,0,0) 25%,rgba(0,0,0,1) 37.5%,rgba(0,0,0,1) 50%,rgba(0,0,0,0) 62.5%)}
+.gradient-blur.top>div:nth-of-type(3){z-index:4;backdrop-filter:blur(4px);mask:linear-gradient(to top,rgba(0,0,0,0) 37.5%,rgba(0,0,0,1) 50%,rgba(0,0,0,1) 62.5%,rgba(0,0,0,0) 75%)}
+.gradient-blur.top>div:nth-of-type(4){z-index:5;backdrop-filter:blur(8px);mask:linear-gradient(to top,rgba(0,0,0,0) 50%,rgba(0,0,0,1) 62.5%,rgba(0,0,0,1) 75%,rgba(0,0,0,0) 87.5%)}
+.gradient-blur.top>div:nth-of-type(5){z-index:6;backdrop-filter:blur(16px);mask:linear-gradient(to top,rgba(0,0,0,0) 62.5%,rgba(0,0,0,1) 75%,rgba(0,0,0,1) 87.5%,rgba(0,0,0,0) 100%)}
+.gradient-blur.top>div:nth-of-type(6){z-index:7;backdrop-filter:blur(32px);mask:linear-gradient(to top,rgba(0,0,0,0) 75%,rgba(0,0,0,1) 87.5%,rgba(0,0,0,1) 100%)}
+.gradient-blur.top::after{content:"";position:absolute;inset:0;z-index:8;backdrop-filter:blur(64px);mask:linear-gradient(to top,rgba(0,0,0,0) 87.5%,rgba(0,0,0,1) 100%)}
+.gradient-blur.bottom::before{content:"";position:absolute;inset:0;z-index:1;backdrop-filter:blur(.5px);mask:linear-gradient(to bottom,rgba(0,0,0,0) 0%,rgba(0,0,0,1) 12.5%,rgba(0,0,0,1) 25%,rgba(0,0,0,0) 37.5%)}
+.gradient-blur.bottom>div:nth-of-type(1){z-index:2;backdrop-filter:blur(1px);mask:linear-gradient(to bottom,rgba(0,0,0,0) 12.5%,rgba(0,0,0,1) 25%,rgba(0,0,0,1) 37.5%,rgba(0,0,0,0) 50%)}
+.gradient-blur.bottom>div:nth-of-type(2){z-index:3;backdrop-filter:blur(2px);mask:linear-gradient(to bottom,rgba(0,0,0,0) 25%,rgba(0,0,0,1) 37.5%,rgba(0,0,0,1) 50%,rgba(0,0,0,0) 62.5%)}
+.gradient-blur.bottom>div:nth-of-type(3){z-index:4;backdrop-filter:blur(4px);mask:linear-gradient(to bottom,rgba(0,0,0,0) 37.5%,rgba(0,0,0,1) 50%,rgba(0,0,0,1) 62.5%,rgba(0,0,0,0) 75%)}
+.gradient-blur.bottom>div:nth-of-type(4){z-index:5;backdrop-filter:blur(8px);mask:linear-gradient(to bottom,rgba(0,0,0,0) 50%,rgba(0,0,0,1) 62.5%,rgba(0,0,0,1) 75%,rgba(0,0,0,0) 87.5%)}
+.gradient-blur.bottom>div:nth-of-type(5){z-index:6;backdrop-filter:blur(16px);mask:linear-gradient(to bottom,rgba(0,0,0,0) 62.5%,rgba(0,0,0,1) 75%,rgba(0,0,0,1) 87.5%,rgba(0,0,0,0) 100%)}
+.gradient-blur.bottom>div:nth-of-type(6){z-index:7;backdrop-filter:blur(32px);mask:linear-gradient(to bottom,rgba(0,0,0,0) 75%,rgba(0,0,0,1) 87.5%,rgba(0,0,0,1) 100%)}
+.gradient-blur.bottom::after{content:"";position:absolute;inset:0;z-index:8;backdrop-filter:blur(64px);mask:linear-gradient(to bottom,rgba(0,0,0,0) 87.5%,rgba(0,0,0,1) 100%)}
 
-.content{position:relative;z-index:2;max-width:1040px;margin:0 auto;padding:5rem 2rem 6rem}
+nav{position:fixed;top:0;left:0;right:0;z-index:5;display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;font-size:.8rem;text-transform:uppercase;letter-spacing:.12em}
+nav .logo{font-weight:700;color:#fff;text-decoration:none;font-size:.75rem}
+nav .links{display:flex;gap:2rem}
+nav .links a{color:rgba(255,255,255,.3);text-decoration:none;transition:color .2s}
+nav .links a:hover{color:rgba(255,255,255,.7)}
 
-header{margin-bottom:4.5rem}
-header h1{font-size:.75rem;font-weight:500;text-transform:uppercase;letter-spacing:.15em;color:rgba(255,255,255,.25);margin-bottom:.75rem}
-header p{font-size:1.05rem;line-height:1.7;color:rgba(255,255,255,.5);max-width:520px}
+main{position:relative;z-index:2}
+
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:6rem 2rem 0}
+.hero h1{font-size:clamp(4rem,12vw,10rem);font-weight:800;letter-spacing:-.04em;line-height:.9;margin-bottom:.5rem;color:#fff}
+.hero p{font-size:clamp(1rem,2vw,1.4rem);color:rgba(255,255,255,.3);letter-spacing:.2em;text-transform:uppercase;margin-bottom:1.5rem}
+.hero .sub{color:rgba(255,255,255,.15);font-size:.85rem;letter-spacing:.08em;max-width:480px;margin-bottom:3rem}
+
+.marquee-wrap{width:100%;overflow:hidden;padding:2rem 0;border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06);margin-top:3rem}
+.marquee-track{display:flex;gap:0;width:fit-content;animation:marq 20s linear infinite}
+.marquee-track span{flex-shrink:0;font-size:clamp(.7rem,1.2vw,.9rem);text-transform:uppercase;letter-spacing:.15em;color:rgba(255,255,255,.12);padding:0 2rem;white-space:nowrap}
+@keyframes marq{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+.sec{padding:6rem 2rem;max-width:1040px;margin:0 auto}
+.sec-title{font-size:.7rem;text-transform:uppercase;letter-spacing:.15em;color:rgba(255,255,255,.15);margin-bottom:3rem}
+
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+.card{border:1px solid rgba(255,255,255,.08);padding:2rem;background:rgba(255,255,255,.02)}
+.card h3{font-size:.8rem;text-transform:uppercase;letter-spacing:.12em;margin-bottom:.75rem;color:rgba(255,255,255,.6)}
+.card p{font-size:.85rem;color:rgba(255,255,255,.25);line-height:1.7}
+.card .num{font-size:2.5rem;font-weight:800;color:rgba(255,255,255,.04);margin-bottom:.5rem;line-height:1}
 
 .gallery{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
-
-.card{position:relative;overflow:clip;isolation:isolate;contain:paint;background:#0a0a0a;cursor:crosshair;width:100%;aspect-ratio:16/10}
-.card img{display:block;width:100%;height:100%;object-fit:cover;object-position:center;user-select:none;-webkit-user-select:none}
-.card__base{position:relative;z-index:0;filter:grayscale(1) contrast(1.1) brightness(.65)}
-.card__overlay{position:absolute;z-index:1;inset:0;pointer-events:none;
+.g-card{position:relative;overflow:clip;isolation:isolate;contain:paint;background:#0a0a0a;cursor:crosshair;width:100%;aspect-ratio:16/10}
+.g-card img{display:block;width:100%;height:100%;object-fit:cover;object-position:center;user-select:none}
+.g-card__base{position:relative;z-index:0;filter:grayscale(1) contrast(1.1) brightness(.65)}
+.g-card__overlay{position:absolute;z-index:1;inset:0;pointer-events:none;
 -webkit-mask-image:radial-gradient(circle var(--r,0px) at var(--rx,50%) var(--ry,50%),
-  rgb(0 0 0 / 1) 0%,rgb(0 0 0 / 1) 40%,rgb(0 0 0 / .75) 60%,rgb(0 0 0 / .4) 75%,rgb(0 0 0 / .12) 88%,transparent 100%);
+  rgb(0 0 0/1) 0%,rgb(0 0 0/1) 40%,rgb(0 0 0/.75) 60%,rgb(0 0 0/.4) 75%,rgb(0 0 0/.12) 88%,transparent 100%);
 mask-image:radial-gradient(circle var(--r,0px) at var(--rx,50%) var(--ry,50%),
-  rgb(0 0 0 / 1) 0%,rgb(0 0 0 / 1) 40%,rgb(0 0 0 / .75) 60%,rgb(0 0 0 / .4) 75%,rgb(0 0 0 / .12) 88%,transparent 100%);
+  rgb(0 0 0/1) 0%,rgb(0 0 0/1) 40%,rgb(0 0 0/.75) 60%,rgb(0 0 0/.4) 75%,rgb(0 0 0/.12) 88%,transparent 100%);
 -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
-.card__label{position:absolute;bottom:.75rem;left:.75rem;z-index:2;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.2);pointer-events:none}
 
-@media(hover:none),(pointer:coarse){.card__overlay{display:none}}
-@media(max-width:640px){.gallery{grid-template-columns:1fr}.content{padding:3rem 1rem 4rem}}
+footer{position:relative;z-index:2;text-align:center;padding:4rem 2rem;font-size:.7rem;text-transform:uppercase;letter-spacing:.15em;color:rgba(255,255,255,.1)}
+
+@media(hover:none),(pointer:coarse){.g-card__overlay{display:none}}
+@media(max-width:640px){
+  .cards{grid-template-columns:1fr}
+  .gallery{grid-template-columns:1fr}
+  nav .links{display:none}
+  .sec{padding:3rem 1rem}
+  .hero{padding:5rem 1rem 0}
+}
 </style>
 </head>
 <body>
@@ -39,51 +87,93 @@ mask-image:radial-gradient(circle var(--r,0px) at var(--rx,50%) var(--ry,50%),
 <canvas class="dither-bg" id="dither"></canvas>
 <canvas class="lasers-bg" id="lasers"></canvas>
 
-<div class="content">
-  <header>
-    <h1>MengTo Skills — Demo</h1>
-    <p>Dither background, corner lasers, and reveal-hover combined in a single atmospheric gallery.</p>
-  </header>
+<div class="gradient-blur top"><div></div><div></div><div></div><div></div><div></div><div></div></div>
+<div class="gradient-blur bottom"><div></div><div></div><div></div><div></div><div></div><div></div></div>
+
+<nav>
+  <a href="#" class="logo">Kurage</a>
+  <div class="links">
+    <a href="#skills">Skills</a>
+    <a href="#work">Work</a>
+    <a href="https://github.com/MengTo/Skills" target="_blank">GitHub</a>
+  </div>
+</nav>
+
+<main>
+<section class="hero">
+  <h1>Kurage</h1>
+  <p>Studio</p>
+  <div class="sub">Design · Motion · Code · 144 skills from the MengTo collection</div>
+  <div class="marquee-wrap">
+    <div class="marquee-track" id="marquee">
+      <span>Web Design</span><span>·</span><span>Game Dev</span><span>·</span><span>Codex</span><span>·</span><span>UI</span><span>·</span><span>Media</span><span>·</span><span>Support</span><span>·</span>
+      <span>Web Design</span><span>·</span><span>Game Dev</span><span>·</span><span>Codex</span><span>·</span><span>UI</span><span>·</span><span>Media</span><span>·</span><span>Support</span><span>·</span>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="skills">
+  <div class="sec-title">Skills</div>
+  <div class="cards">
+    <div class="card">
+      <div class="num">01</div>
+      <h3>Dither Background</h3>
+      <p>Canvas-based Bayer ordered dithering with FBM noise. Dark monochrome atmosphere, slow organic wave drift, 6-stop palette.</p>
+    </div>
+    <div class="card">
+      <div class="num">02</div>
+      <h3>Corner Lasers</h3>
+      <p>WebGL fragment shader rendering three thin warm beams from an off-center emitter. SDF-based glow, haze, and emitter bloom in real-time.</p>
+    </div>
+    <div class="card">
+      <div class="num">03</div>
+      <h3>Reveal Hover</h3>
+      <p>CSS mask spotlight that tracks pointer position. Eased animation loop reveals full-color image beneath a grayscale base layer.</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="work">
+  <div class="sec-title">Work</div>
   <div class="gallery">
-    <figure class="card" data-reveal>
-      <img class="card__base" src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80" alt="" width="800" height="500" decoding="async" loading="lazy"/>
-      <img class="card__overlay" src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80" alt="" aria-hidden="true" width="800" height="500" decoding="async" loading="lazy"/>
-      <span class="card__label">hover to reveal</span>
+    <figure class="g-card" data-reveal>
+      <img class="g-card__base" src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80" alt="" width="800" height="500" decoding="async" loading="lazy"/>
+      <img class="g-card__overlay" src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80" alt="" aria-hidden="true" width="800" height="500" decoding="async" loading="lazy"/>
     </figure>
-    <figure class="card" data-reveal>
-      <img class="card__base" src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=800&q=80" alt="" width="800" height="500" decoding="async" loading="lazy"/>
-      <img class="card__overlay" src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=800&q=80" alt="" aria-hidden="true" width="800" height="500" decoding="async" loading="lazy"/>
-      <span class="card__label">hover to reveal</span>
+    <figure class="g-card" data-reveal>
+      <img class="g-card__base" src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=800&q=80" alt="" width="800" height="500" decoding="async" loading="lazy"/>
+      <img class="g-card__overlay" src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=800&q=80" alt="" aria-hidden="true" width="800" height="500" decoding="async" loading="lazy"/>
     </figure>
-    <figure class="card" data-reveal>
-      <img class="card__base" src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&q=80" alt="" width="800" height="500" decoding="async" loading="lazy"/>
-      <img class="card__overlay" src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&q=80" alt="" aria-hidden="true" width="800" height="500" decoding="async" loading="lazy"/>
-      <span class="card__label">hover to reveal</span>
+    <figure class="g-card" data-reveal>
+      <img class="g-card__base" src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&q=80" alt="" width="800" height="500" decoding="async" loading="lazy"/>
+      <img class="g-card__overlay" src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&q=80" alt="" aria-hidden="true" width="800" height="500" decoding="async" loading="lazy"/>
     </figure>
-    <figure class="card" data-reveal>
-      <img class="card__base" src="https://images.unsplash.com/photo-1505144808419-1957a94ca61e?w=800&q=80" alt="" width="800" height="500" decoding="async" loading="lazy"/>
-      <img class="card__overlay" src="https://images.unsplash.com/photo-1505144808419-1957a94ca61e?w=800&q=80" alt="" aria-hidden="true" width="800" height="500" decoding="async" loading="lazy"/>
-      <span class="card__label">hover to reveal</span>
+    <figure class="g-card" data-reveal>
+      <img class="g-card__base" src="https://images.unsplash.com/photo-1505144808419-1957a94ca61e?w=800&q=80" alt="" width="800" height="500" decoding="async" loading="lazy"/>
+      <img class="g-card__overlay" src="https://images.unsplash.com/photo-1505144808419-1957a94ca61e?w=800&q=80" alt="" aria-hidden="true" width="800" height="500" decoding="async" loading="lazy"/>
     </figure>
   </div>
-</div>
+</section>
+</main>
+
+<footer>Kurage · Built with MengTo Skills · 2026</footer>
 
 <script>
-// ─── Dither background ──────────────────────────────────────────
+// ─── Dither background ─────────────────────────────────────────
 (function(){
-const BAYER=[0,8,2,10,12,4,14,6,3,11,1,9,15,7,13,5].map(function(v){return(v+.5)/16});
+var B=[0,8,2,10,12,4,14,6,3,11,1,9,15,7,13,5].map(function(v){return(v+.5)/16});
 function ss(e0,e1,v){var t=Math.max(0,Math.min(1,(v-e0)/(e1-e0)));return t*t*(3-2*t)}
 function vn(x,y){
-  var ix=Math.floor(x),iy=Math.floor(y),fx=x-ix,fy=y-iy,ux=fx*fx*(3-2*fx),uy=fy*fy*(3-2*fy);
-  var a=Math.sin(ix*127.1+iy*311.7)*43758.5453123;a=a-Math.floor(a);
-  var b=Math.sin((ix+1)*127.1+iy*311.7)*43758.5453123;b=b-Math.floor(b);
-  var c=Math.sin(ix*127.1+(iy+1)*311.7)*43758.5453123;c=c-Math.floor(c);
-  var d=Math.sin((ix+1)*127.1+(iy+1)*311.7)*43758.5453123;d=d-Math.floor(d);
+  var ix=~~x,iy=~~y,fx=x-ix,fy=y-iy,ux=fx*fx*(3-2*fx),uy=fy*fy*(3-2*fy);
+  var a=Math.sin(ix*127.1+iy*311.7)*43758.5453123;a=a-~~a;
+  var b=Math.sin((ix+1)*127.1+iy*311.7)*43758.5453123;b=b-~~b;
+  var c=Math.sin(ix*127.1+(iy+1)*311.7)*43758.5453123;c=c-~~c;
+  var d=Math.sin((ix+1)*127.1+(iy+1)*311.7)*43758.5453123;d=d-~~d;
   return a*(1-ux)*(1-uy)+b*ux*(1-uy)+c*(1-ux)*uy+d*ux*uy
 }
 function fbm(x,y){var v=0,a=.5,f=1;for(var i=0;i<4;i++){v+=vn(x*f,y*f)*a;f*=2.02;a*=.5}return v}
 var c=document.getElementById('dither'),ctx=c.getContext('2d',{alpha:false});
-var palette=[[3,3,3],[16,16,17],[34,35,37],[74,75,78],[168,169,171],[236,236,232]];
+var pa=[[3,3,3],[16,16,17],[34,35,37],[74,75,78],[168,169,171],[236,236,232]];
 var W=1,H=1,C=1,R=1,raf=0;
 function resize(){
   var dpr=Math.min(window.devicePixelRatio||1,1.5);
@@ -104,8 +194,8 @@ function draw(t){
   var s=t*.001;
   ctx.fillStyle='rgb(3,3,3)';ctx.fillRect(0,0,W,H);
   for(var y=0;y<R;y++)for(var x=0;x<C;x++){
-    var th=BAYER[(y%4)*4+(x%4)],br=field(x,y,s),st=Math.floor(Math.max(0,Math.min(.999,br+th*.18))*palette.length);
-    var p=palette[Math.min(palette.length-1,st)];
+    var th=B[(y%4)*4+(x%4)],br=field(x,y,s),st=Math.floor(Math.max(0,Math.min(.999,br+th*.18))*pa.length);
+    var p=pa[Math.min(pa.length-1,st)];
     ctx.fillStyle='rgb('+p[0]+','+p[1]+','+p[2]+')';ctx.fillRect(x*7,y*7,7,7)
   }
   raf=requestAnimationFrame(draw)
@@ -114,17 +204,13 @@ resize();draw(0);
 window.addEventListener('resize',function(){cancelAnimationFrame(raf);resize();draw(0)});
 })();
 
-// ─── Corner lasers (WebGL) ──────────────────────────────────────
-(function initLasers(){
+// ─── Corner lasers (WebGL) ─────────────────────────────────────
+(function(){
 var c=document.getElementById('lasers');
-c.width=window.innerWidth;
-c.height=window.innerHeight;
+c.width=window.innerWidth;c.height=window.innerHeight;
 var gl=c.getContext('webgl',{alpha:true,premultipliedAlpha:false});
-if(!gl){console.error('no gl');return}
-
-gl.enable(gl.BLEND);
-gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
-
+if(!gl)return;
+gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
 var vSrc='attribute vec2 pos;void main(){gl_Position=vec4(pos,0,1)}';
 var fSrc='precision highp float;uniform vec2 res;uniform float time;void main(){'+
   'vec2 uv=gl_FragCoord.xy/res;vec2 e=vec2(0.18,0.72);vec2 p=uv-e;'+
@@ -136,67 +222,49 @@ var fSrc='precision highp float;uniform vec2 res;uniform float time;void main(){
   'float de=length(p);float haze=exp(-de*2.)*0.15;float total=beam+glow+haze;'+
   'vec3 col=mix(vec3(total),vec3(1.,0.9,0.6),clamp(total*0.3,0.,1.));'+
   'gl_FragColor=vec4(col,total*0.65+0.12);}';
-
-function mkShader(t,s){var sh=gl.createShader(t);gl.shaderSource(sh,s);gl.compileShader(sh);if(!gl.getShaderParameter(sh,gl.COMPILE_STATUS)){console.error('shader err:',gl.getShaderInfoLog(sh));return null}return sh}
+function mkShader(t,s){var sh=gl.createShader(t);gl.shaderSource(sh,s);gl.compileShader(sh);if(!gl.getShaderParameter(sh,gl.COMPILE_STATUS))return null;return sh}
 var vs=mkShader(gl.VERTEX_SHADER,vSrc),fs=mkShader(gl.FRAGMENT_SHADER,fSrc);
-if(!vs||!fs){console.error('shader fail');return}
-
+if(!vs||!fs)return;
 var prog=gl.createProgram();gl.attachShader(prog,vs);gl.attachShader(prog,fs);gl.linkProgram(prog);
-if(!gl.getProgramParameter(prog,gl.LINK_STATUS)){console.error('link err:',gl.getProgramInfoLog(prog));return}
+if(!gl.getProgramParameter(prog,gl.LINK_STATUS))return;
 gl.useProgram(prog);
-
 gl.bindBuffer(gl.ARRAY_BUFFER,gl.createBuffer());
 gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);
-gl.enableVertexAttribArray(0);
-gl.vertexAttribPointer(0,2,gl.FLOAT,false,0,0);
-
+gl.enableVertexAttribArray(0);gl.vertexAttribPointer(0,2,gl.FLOAT,false,0,0);
 var rL=gl.getUniformLocation(prog,'res'),tL=gl.getUniformLocation(prog,'time');
 gl.viewport(0,0,c.width,c.height);
-
-var start=performance.now();
-function loop(){
-  gl.uniform2f(rL,c.width,c.height);
-  gl.uniform1f(tL,(performance.now()-start)/1000);
-  gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
-  requestAnimationFrame(loop)
-}
-loop();
-
-window.addEventListener('resize',function(){
-  c.width=window.innerWidth;c.height=window.innerHeight;
-  gl.viewport(0,0,c.width,c.height);
-});
+var t0=performance.now();
+(function loop(){gl.uniform2f(rL,c.width,c.height);gl.uniform1f(tL,(performance.now()-t0)/1000);gl.drawArrays(gl.TRIANGLE_STRIP,0,4);requestAnimationFrame(loop)})();
+window.addEventListener('resize',function(){c.width=window.innerWidth;c.height=window.innerHeight;gl.viewport(0,0,c.width,c.height)});
 })();
 
-// ─── Reveal hover ────────────────────────────────────────────────
+// ─── Reveal hover ──────────────────────────────────────────────
 (function(){
-var reduce=window.matchMedia('(prefers-reduced-motion: reduce)');
-var fine=window.matchMedia('(hover: hover) and (pointer: fine)');
-
+var rm=window.matchMedia('(prefers-reduced-motion: reduce)');
+var fp=window.matchMedia('(hover: hover) and (pointer: fine)');
 document.querySelectorAll('[data-reveal]').forEach(function(el){
-  var ov=el.querySelector('.card__overlay');
-  if(!ov||!fine.matches)return;
+  var ov=el.querySelector('.g-card__overlay');
+  if(!ov||!fp.matches)return;
   var s={x:0,y:0,tx:0,ty:0,r:0,tr:0,cx:0,cy:0,in:false,f:0};
-  function sch(){if(!s.f)s.f=requestAnimationFrame(tk)}
+  function sc(){if(!s.f)s.f=requestAnimationFrame(tk)}
   function tk(){
     s.f=0;
-    var pe=reduce.matches?1:.1,re=reduce.matches?1:.14;
+    var pe=rm.matches?1:.1,re=rm.matches?1:.14;
     s.x+=(s.tx-s.x)*pe;s.y+=(s.ty-s.y)*pe;s.r+=(s.tr-s.r)*re;
     el.style.setProperty('--rx',s.x.toFixed(2)+'px');
     el.style.setProperty('--ry',s.y.toFixed(2)+'px');
     el.style.setProperty('--r',s.r.toFixed(2)+'px');
-    if(Math.abs(s.tx-s.x)>.1||Math.abs(s.ty-s.y)>.1||Math.abs(s.tr-s.r)>.1)sch()
+    if(Math.abs(s.tx-s.x)>.1||Math.abs(s.ty-s.y)>.1||Math.abs(s.tr-s.r)>.1)sc()
   }
   function ut(cx,cy){var r=el.getBoundingClientRect();s.cx=cx;s.cy=cy;s.tx=cx-r.left;s.ty=cy-r.top}
-  function rad(){return Math.min(260,Math.max(140,el.clientWidth*.22))}
-  el.addEventListener('pointerenter',function(e){s.in=true;ut(e.clientX,e.clientY);if(s.r<.5){s.x=s.tx;s.y=s.ty}s.tr=rad();sch()});
-  el.addEventListener('pointermove',function(e){ut(e.clientX,e.clientY);if(!s.in){s.in=true;if(s.r<.5){s.x=s.tx;s.y=s.ty}s.tr=rad()}sch()});
-  el.addEventListener('pointerleave',function(){s.in=false;s.tr=0;sch()});
-  el.addEventListener('pointercancel',function(){s.in=false;s.tr=0;sch()});
-  window.addEventListener('blur',function(){s.in=false;s.tr=0;sch()});
-  window.addEventListener('scroll',function(){if(s.in){ut(s.cx,s.cy);s.tr=rad();sch()}},{passive:true});
-  var ro=new ResizeObserver(function(){if(s.in){ut(s.cx,s.cy);s.tr=rad();sch()}});
-  ro.observe(el)
+  function rd(){return Math.min(260,Math.max(140,el.clientWidth*.22))}
+  el.addEventListener('pointerenter',function(e){s.in=true;ut(e.clientX,e.clientY);if(s.r<.5){s.x=s.tx;s.y=s.ty}s.tr=rd();sc()});
+  el.addEventListener('pointermove',function(e){ut(e.clientX,e.clientY);if(!s.in){s.in=true;if(s.r<.5){s.x=s.tx;s.y=s.ty}s.tr=rd()}sc()});
+  el.addEventListener('pointerleave',function(){s.in=false;s.tr=0;sc()});
+  el.addEventListener('pointercancel',function(){s.in=false;s.tr=0;sc()});
+  window.addEventListener('blur',function(){s.in=false;s.tr=0;sc()});
+  window.addEventListener('scroll',function(){if(s.in){ut(s.cx,s.cy);s.tr=rd();sc()}},{passive:true});
+  new ResizeObserver(function(){if(s.in){ut(s.cx,s.cy);s.tr=rd();sc()}}).observe(el)
 });
 })();
 </script>
